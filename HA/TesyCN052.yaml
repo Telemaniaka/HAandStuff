@@ -3,17 +3,29 @@
 # a lot more can be done but this is as far as I got and so far it's enough.
 
 mqtt:
+    sensor:
+        - name: "Tesy Convector Temperature"
+          state_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
+          unit_of_measurement: "°C"
+          value_template: "{{ value_json.payload.currentTemp }}"
+        - name: "Tesy Convector Power"
+          state_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
+          unit_of_measurement: "W"
+          device_class: "power"
+          value_template: "{% if value_json.payload.heating in ['on'] %} 2000 {% else %} 0 {% endif %}"
     climate:
-    - name: Tesy
-      modes:
-        - "auto"
-      current_temperature_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
-      current_temperature_template: "{{ value_json.payload.currentTemp }}"
-      temperature_state_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
-      temperature_state_template: "{{ value_json.payload.target }}"
-      temperature_command_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTemp"
-      temperature_command_template: "{'app_id':0, 'temp': {{value}}}"
-      mode_state_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
-      mode_state_template: "{% if value_json.payload.heating in ['on'] %} heat {% else %} auto {% endif %}"
-      action_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
-      action_template: "{% if value_json.payload.heating in ['on'] %} heating {% else %} idle {% endif %}"
+        - name: Tesy
+          modes:
+            - "auto"
+          max_temp: 30
+          current_temperature_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
+          current_temperature_template: "{{ value_json.payload.currentTemp }}"
+          temperature_state_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
+          temperature_state_template: "{{ value_json.payload.target }}"
+          temperature_command_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTemp"
+          temperature_command_template: "{'app_id':0, 'temp': {{value}}}"
+          mode_state_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
+          mode_state_template: "{% if value_json.payload.heating in ['on'] %} heat {% else %} auto {% endif %}"
+          action_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
+          action_template: "{% if value_json.payload.heating in ['on'] %} heating {% else %} idle {% endif %}"
+          
