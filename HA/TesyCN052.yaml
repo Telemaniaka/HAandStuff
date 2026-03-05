@@ -16,16 +16,19 @@ mqtt:
     climate:
         - name: Tesy
           modes:
-            - "auto"
+            - "off"
+            - "heat"
           max_temp: 30
           current_temperature_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
           current_temperature_template: "{{ value_json.payload.currentTemp }}"
           temperature_state_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
           temperature_state_template: "{{ value_json.payload.target }}"
-          temperature_command_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTemp"
-          temperature_command_template: "{'app_id':0, 'temp': {{value}}}"
-          mode_state_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
-          mode_state_template: "{% if value_json.payload.heating in ['on'] %} heat {% else %} auto {% endif %}"
-          action_topic: "v1/<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
+          temperature_command_topic: "v1/<MAC ADDRESS>/request/cn05uv/<UNIQUE ID>/setTemp"
+          temperature_command_template: '{"temp": {{value}}}'
+          mode_command_topic: "v1/<MAC ADDRESS>/request/cn05uv/<UNIQUE ID>/onOff"
+          mode_command_template: '{"status": {% if value in ["off"] %} "off" {% else %} "on" {% endif %}}'
+          mode_state_topic: "<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setMode"
+          mode_state_template: "{% if value_json.payload.name in ['heating'] %} heat {% else %} off {% endif %}"
+          action_topic: "<MAC ADDRESS>/response/cn05uv/<UNIQUE ID>/setTempStatistic"
           action_template: "{% if value_json.payload.heating in ['on'] %} heating {% else %} idle {% endif %}"
           
